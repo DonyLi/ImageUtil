@@ -1,19 +1,16 @@
 package com.jason.jasonimageutil;
 
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.widget.ImageView;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class BaseImageUtil {
 
     private static int LOADINGTAG = 0;
-    private static int TAGKEY = 3 << 24;
+    protected static int TAGKEY = 3 << 24;
     private static int OLDTAG = 3 << 24 + 4;
     private static ThreadPool service = new ThreadPool(5);
     private static Handler handler = new Handler();
@@ -33,15 +30,15 @@ public class BaseImageUtil {
     public static void loadImage(final String path, final ImageView imageView,
                                  final ReadImage image, final ImageLoadCallBack loadCallBack, final int widthLim, final boolean isGif) {
         if (path != null) {
-            loadCallBack.onStart(imageView);
             final String tagString = path + widthLim;
+            final int tag = LOADINGTAG++;
+            imageView.setTag(TAGKEY, tag);
+            loadCallBack.onStart(imageView);
             ReadImageResult result = bitmapLoadCache.getCache(tagString);
             if (result != null) {
                 loadCallBack.onLoadCache(imageView, result);
                 return;
             }
-            final int tag = LOADINGTAG++;
-            imageView.setTag(TAGKEY, tag);
             Object objectTag = imageView.getTag(OLDTAG);
             if (objectTag != null) {
                 Task task = taskConcurrentHashMap.get(tagString);

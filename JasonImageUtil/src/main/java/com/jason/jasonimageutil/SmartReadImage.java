@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,12 +51,25 @@ public class SmartReadImage implements ReadImage {
                 e.printStackTrace();
             }
         } else {
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
-            result.getFrameList().add(new Frame(bitmap, 0, widthLim));
+            try {
+                result.getFrameList().add(new Frame(compressBitmap(path, widthLim), 0, widthLim));
+            }catch (Exception e){
+               e.printStackTrace();
+            }
         }
 
         return result;
     }
+
+    public Bitmap compressBitmap(String path, int width) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        options.inSampleSize = options.outWidth / width;
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(path, options);
+    }
+
 
     public String getBitmapTpye(String path) {
         BitmapFactory.Options options = new BitmapFactory.Options();

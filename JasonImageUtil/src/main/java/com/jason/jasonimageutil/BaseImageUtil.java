@@ -31,8 +31,8 @@ public class BaseImageUtil {
                                  final ReadImage image, final ImageLoadCallBack loadCallBack, final int widthLim, final boolean isGif) {
         if (path != null) {
             final String tagString = path + widthLim;
-            final int tag = LOADINGTAG++;
-            imageView.setTag(TAGKEY, tag);
+            final int loadTag = LOADINGTAG++;
+            imageView.setTag(TAGKEY, loadTag);
             loadCallBack.onStart(imageView);
             ReadImageResult result = bitmapLoadCache.getCache(tagString);
             if (result != null) {
@@ -57,7 +57,7 @@ public class BaseImageUtil {
                         final ReadImageResult result = image.readImage(path, widthLim, isGif);
                         if (result != null) {
                             bitmapLoadCache.putInCache(tagString, result);
-                            if ((int) imageView.getTag() == tag) {
+                            if ((int) imageView.getTag(TAGKEY) == loadTag) {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -66,7 +66,7 @@ public class BaseImageUtil {
                                 });
                             }
                         } else {
-                            if ((int) imageView.getTag() == tag) {
+                            if ((int) imageView.getTag(TAGKEY) == loadTag) {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {

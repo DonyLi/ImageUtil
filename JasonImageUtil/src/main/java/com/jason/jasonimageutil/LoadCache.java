@@ -39,7 +39,8 @@ public abstract class LoadCache<T> {
         if (key == null) {
             return null;
         }
-        T value = concurrentHashMap.get(key).get();
+        SoftReference<T> softReference = concurrentHashMap.get(key);
+        T value = softReference == null ? null : softReference.get();
 
         return value == null ? cache.get(key) : value;
     }

@@ -11,6 +11,7 @@ import java.net.URL;
 public class ImageDownloader {
     public static boolean loadFromIntert(String urlString, String path) {
         try {
+
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -25,6 +26,9 @@ public class ImageDownloader {
             urlConnection.setRequestProperty("Accept-Charset", "UTF-8");
             urlConnection.connect();
             File file = new File(path);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             int length = urlConnection.getContentLength();
             if (file.exists() && length == file.length()) {
                 urlConnection.disconnect();

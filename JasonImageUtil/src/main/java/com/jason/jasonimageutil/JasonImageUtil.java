@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import java.lang.ref.WeakReference;
 
 
-public class JasonImageUtil {
+public class JasonImageUtil implements Cloneable {
     private int defaultDrwable;
     private int failedDrwable;
     private ImageView imageView;
@@ -22,6 +22,7 @@ public class JasonImageUtil {
     ImageLoadCallBack imageLoadCallBack;
     private Handler handler = new Handler();
     private WeakReference<ImageView> imageViewWeakReference;
+    private static JasonImageUtil imageUtil = new JasonImageUtil();
 
 
     public void load() {
@@ -100,7 +101,7 @@ public class JasonImageUtil {
                             return;
                         }
                         Object newTag = imageView.getTag(BaseImageUtil.TAGKEY);
-                        if ((int) tag != (int) newTag) {
+                        if ((int) tag == (int) newTag) {
                             Frame frame = result.getFrameList().get(i % result.getFrameList().size());
                             imageView.setImageBitmap(frame.getBitmap());
                             handler.postDelayed(this, frame.getDelayTime());
@@ -154,10 +155,20 @@ public class JasonImageUtil {
         return this;
     }
 
-    public JasonImageUtil setContext(Context context) {
-        this.context = context;
-        return this;
+    public static JasonImageUtil with(Context context) {
+        JasonImageUtil imageUtil;
+        try {
+            imageUtil = (JasonImageUtil) JasonImageUtil.imageUtil.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            imageUtil = new JasonImageUtil();
+        }
+        imageUtil.context = context;
+        return imageUtil;
     }
 
-
+    public JasonImageUtil setImageLoadCallBack(ImageLoadCallBack imageLoadCallBack) {
+        this.imageLoadCallBack = imageLoadCallBack;
+        return this;
+    }
 }

@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+//基础加载框架
 public class BaseImageUtil {
 
     private static int LOADINGTAG = 0;

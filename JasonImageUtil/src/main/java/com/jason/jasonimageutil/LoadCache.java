@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class LoadCache<T> {
 
+    private ConcurrentHashMap<String, SoftReference<T>> concurrentHashMap = new ConcurrentHashMap<>();
+
     private LruCache<String, T> cache = new LruCache<String, T>((int) (Runtime.getRuntime().maxMemory() / 8 / 1024)) {
         @Override
         protected int sizeOf(String key, T value) {
@@ -23,7 +25,6 @@ public abstract class LoadCache<T> {
 
         }
     };
-    private ConcurrentHashMap<String, SoftReference<T>> concurrentHashMap = new ConcurrentHashMap<>();
 
     public abstract int sizeOf(String key, T value);
 
